@@ -1,3 +1,10 @@
+'''
+@Author: Ding Song
+@Date: 2020-02-04 22:13:07
+@LastEditors: Ding Song
+@LastEditTime: 2020-02-04 22:13:07
+@Description: 
+'''
 import torch
 import torch.nn as nn
 from dataset import TrainData
@@ -28,3 +35,5 @@ class Solver(object):
                 self.optimizer.step()
 
     def adjust_lr(self,decay=0.2):
+        for param_group in self.model.param_groups:
+            param_group['lr'] *= decay

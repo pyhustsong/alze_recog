@@ -1,3 +1,10 @@
+'''
+@Author: Ding Song
+@Date: 2020-02-04 20:05:21
+@LastEditors  : Ding Song
+@LastEditTime : 2020-02-04 20:22:55
+@Description: 
+'''
 import h5py
 import torch
 import torchvision.transforms as transforms
@@ -16,12 +23,15 @@ class TrainData(Dataset):
     def __getitem__(self,idx):
         img = self.data[idx][0]
         img = img.transpose(1,0,2)
-        label = self.label_file[idx].strip()
-        return torch.from_numpy(img),torch.Tensor(label)
+        label = int(self.label_file[idx].strip().split(',')[-1])
+        return torch.from_numpy(img),torch.tensor(label)
+
+    def __len__(self):
+        return len(self.label_file) - 1
 
 if __name__ == '__main__':
-    h5file = '../alze_recog/train_pre_data.h5'
-    csvfile = '../alze_recog/train_pre_label.csv'
+    h5file = '/home/song/workspace/datasets/recog-alzheimer/train/train_pre_data.h5'
+    csvfile = '/home/song/workspace/datasets/recog-alzheimer/train/train_pre_label.csv'
     dataset = TrainData(h5file,csvfile)
     dataloader = DataLoader(dataset,num_workers=2,batch_size=2)
     for idx,(img,label) in enumerate(dataloader):

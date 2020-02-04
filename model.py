@@ -1,9 +1,16 @@
+'''
+@Author: Ding Song
+@Date: 2020-02-04 20:36:03
+@LastEditors  : Ding Song
+@LastEditTime : 2020-02-04 22:14:09
+@Description: 
+'''
 import torch
 import torch.nn as nn
 
 class RecogNet(nn.Module):
 
-    def __init__(self):
+    def __init__(self,num_classes):
         super().__init__()
         self.feature = nn.Sequential(
             nn.Conv2d(1,10,3,1,1),
@@ -16,25 +23,21 @@ class RecogNet(nn.Module):
             nn.ReLU(),
             nn.MaxPool2d(2,2)
         )
-        self.rnn = nn.LSTMCell(36*20,36*20)
-        self.fc = nn.Linear(36*20,3)
-        self.h0 = torch.randn(112).cuda()
-        self.c0 = torch.randn(112).cuda()
+        self.rnn = nn.LSTMCell(20*36,20*36)
+        self.fc = nn.Linear(36*20,num_classes)
 
     def forward(self,imgs):
-        h,c = self.h0, self.c0
         channel = imgs.shape[1]
         for i in range(channel):
             feature = self.feature(imgs[:,i,...].unsqueeze(dim=1))
-            print(feature.shape)
-            feature = feature.view(36*40,-1)
-            h,c = self.rnn(feature,(h,c))
-        output = torch.softmax(self.fc(h))
+            feature = feature.view(-1,36*20)
+            h,c = self.rnn(feature)
+        output = torch.softmax(self.fc(h),dim=-1)
         return output
 
 if __name__ == '__main__':
-    model = RecogNet()
+    model = RecogNet(3)
     model.cuda()
     print(model)
-    imgs = torch.randn(2,3,48,48).cuda()
+    imgs = torch.randn(2,5,48,48).cuda()
     print(model(imgs))
