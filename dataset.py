@@ -2,7 +2,7 @@
 @Author: Ding Song
 @Date: 2020-02-04 20:05:21
 @LastEditors  : Ding Song
-@LastEditTime : 2020-02-04 20:22:55
+@LastEditTime : 2020-02-05 18:23:01
 @Description: 
 '''
 import h5py
@@ -26,7 +26,7 @@ class TrainData(Dataset):
     def __getitem__(self,idx):
         img = self.data[idx][0]
         img = img.transpose(1,0,2)
-        new_img = np.zeros(img.shape[0],self.img_size,self.img_size)
+        new_img = np.zeros((img.shape[0],self.img_size,self.img_size),dtype=np.float32)
         for i in range(img.shape[0]):
             new_img[i] = cv2.resize(img[i],(self.img_size,self.img_size))
         label = int(self.label_file[idx].strip().split(',')[-1])
