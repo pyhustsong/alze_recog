@@ -1,8 +1,8 @@
 '''
 @Author: Ding Song
 @Date: 2020-02-04 22:13:07
-@LastEditors: Ding Song
-@LastEditTime: 2020-02-04 22:13:07
+@LastEditors  : Ding Song
+@LastEditTime : 2020-02-05 13:54:09
 @Description: 
 '''
 import os
@@ -75,9 +75,12 @@ def main():
     learning_rate = 5e-3
     num_epoch = 20
     save_dir = 'models'
-    h5file = ''
-    csvfile = ''
+    h5file = '/home/song/workspace/datasets/recog-alzheimer/train/train_pre_data.h5'
+    csvfile = '/home/song/workspace/datasets/recog-alzheimer/train/train_pre_label.csv'
     dataset = TrainData(h5file,csvfile)
     train_loader = DataLoader(dataset,batch_size=5,shuffle=True)
     solver = Solver(learning_rate,num_epoch,save_dir)
     solver.train(train_loader)
+
+if __name__ == '__main__':
+    main()
