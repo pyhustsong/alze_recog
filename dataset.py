@@ -35,6 +35,24 @@ class TrainData(Dataset):
     def __len__(self):
         return len(self.label_file) - 1
 
+class TestData(Dataset):
+
+    def __init__(self,h5file,img_size):
+
+        self.data = h5py.File(h5file,'r')['data']
+        self.img_size = img_size
+
+    def __getitem__(self,idx):
+        img = self.data[idx][0]
+        img = img.transpose(1,0,2)
+        new_img = np.zeros((img.shape[0],self.img_size,self.img_size),dtype=np.float32)
+        for i in range(img.shape[0]):
+            new_img[i] = cv2.resize(img[i],(self.img_size,self.img_size))
+        return torch.from_numpy(new_img)
+
+    def __len__(self):
+        return len(self.data)
+
 if __name__ == '__main__':
     h5file = '/home/song/workspace/datasets/recog-alzheimer/train/train_pre_data.h5'
     csvfile = '/home/song/workspace/datasets/recog-alzheimer/train/train_pre_label.csv'
