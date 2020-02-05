@@ -6,25 +6,31 @@
 @Description: 
 '''
 import h5py
+import cv2
 import torch
 import torchvision.transforms as transforms
+import numpy as np 
 from PIL import Image 
 from torch.utils.data import Dataset,DataLoader
 
 class TrainData(Dataset):
 
-    def __init__(self,h5file,csvfile):
+    def __init__(self,h5file,csvfile,img_size):
 
         self.data = h5py.File(h5file,'r')['data']
         with open(csvfile,'r') as f:
             lines = f.readlines()[1:]
         self.label_file = lines
+        self.img_size = img_size
 
     def __getitem__(self,idx):
         img = self.data[idx][0]
         img = img.transpose(1,0,2)
+        new_img = np.zeros(img.shape[0],self.img_size,self.img_size)
+        for i in range(img.shape[0]):
+            new_img[i] = cv2.resize(img[i],(self.img_size,self.img_size))
         label = int(self.label_file[idx].strip().split(',')[-1])
-        return torch.from_numpy(img),torch.tensor(label)
+        return torch.from_numpy(new_img),torch.tensor(label)
 
     def __len__(self):
         return len(self.label_file) - 1
