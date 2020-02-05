@@ -27,11 +27,12 @@ class RecogNet(nn.Module):
         self.fc = nn.Linear(36*20,num_classes)
 
     def forward(self,imgs):
-        channel = imgs.shape[1]
+        b,channel = imgs.shape[0],imgs.shape[1]
+        h,c = torch.zeros(b,720).cuda(), torch.zeros(b,720).cuda()
         for i in range(channel):
             feature = self.feature(imgs[:,i,...].unsqueeze(dim=1))
             feature = feature.view(-1,36*20)
-            h,c = self.rnn(feature)
+            h,c = self.rnn(feature,(h,c))
         output = torch.softmax(self.fc(h),dim=-1)
         return output
 
