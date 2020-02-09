@@ -2,9 +2,9 @@
 This is a repo which contains files used to recognize alzheimer.
 ## Mentality ##
 RecogNet contains two parts:
-- encoder
+- encoder   
 A CNN used to encode imgs.
-- decoder
+- decoder   
 A RNN used to combain infomations of all imgs and classify instant.
 ## Requirements ##
 - Python >= 3.7
